@@ -1,8 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
 
 function boomp(options = {patch: true}) {
-  const packageJsonPath = path.join(__dirname, 'package.json');
+  const packageJsonPath = path.join(process.cwd(), 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
   const version = packageJson.version.split('.');
@@ -22,22 +23,19 @@ function boomp(options = {patch: true}) {
   packageJson.version = version.join('.');
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-  // Commit the change to package.json
-  require('child_process').execSync('git add package.json && git commit -m "boomp!"', {
-    cwd: path.dirname(packageJsonPath)
-  });
+  const commands = [
+    'git add package.json && git commit -m "boomp!"',
+    `git tag v${packageJson.version}`,
+    'git push',
+    'git push --tags',
+    'npm publish'
+  ];
 
-  // Tag the new version
-  require('child_process').execSync(`git tag v${packageJson.version}`, {
-    cwd: path.dirname(packageJsonPath)
-  });
-
-  // Push the changes and tags
-  require('child_process').execSync('git push && git push --tags', {
-    cwd: path.dirname(packageJsonPath)
-  });
+  for (const command of commands) {
+    execSync(command, {cwd: path.dirname(packageJsonPath)});
+  }
 
   return packageJson.version;
 }
 
-module.exports = { boomp };
+export { boomp };
