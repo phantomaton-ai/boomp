@@ -1,41 +1,45 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import child_process from 'child_process';
 
-function boomp(options = {patch: true}) {
-  const packageJsonPath = path.join(process.cwd(), 'package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const versions = { 'major': 0, 'minor': 1, 'patch': 2 };
 
-  const version = packageJson.version.split('.');
-  const [major, minor, patch] = version;
-
-  if (options.major) {
-    version[0] = parseInt(major) + 1;
-    version[1] = 0;
-    version[2] = 0;
-  } else if (options.minor) {
-    version[1] = parseInt(minor) + 1;
-    version[2] = 0;
-  } else {
-    version[2] = parseInt(patch) + 1;
+function boomp(options = { version: 'patch' }) {
+  if (!Object.hasOwn(versions, options.version)) {
+    throw new Error([
+      `Unknown version field ${options.version}.`,
+      'Valid options are:',
+      Object.keys(versions).join(', ')
+    ].join(' '));
   }
 
-  packageJson.version = version.join('.');
+  const cwd = process.cwd();
+  const packageJsonPath = path.join(cwd, 'package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+  const depth = versions[options.version];
+  packageJson.version = packageJson.version.split('.').map(
+    (value, index) =>
+      index === depth ? parseInt(value) + 1 : 
+      index > depth ? 0 :
+      value
+  ).join('.');
+
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-  const commands = [
+  [
     'git add package.json && git commit -m "boomp!"',
     `git tag v${packageJson.version}`,
     'git push',
     'git push --tags',
     'npm publish'
-  ];
-
-  for (const command of commands) {
-    execSync(command, {cwd: path.dirname(packageJsonPath)});
-  }
+  ].forEach(command => child_process.execSync(command, { cwd }));
 
   return packageJson.version;
 }
 
-export { boomp };
+Object.keys(versions).forEach(version => {
+  boomp[version] = (options = {}) => boomp({ ...options, version });
+});
+
+export default boomp;

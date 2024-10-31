@@ -1,14 +1,17 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
-import { boomp } from './boomp.js';
+import { expect, match, stub } from 'lovecraft';
+
+import fs from 'fs';
+import child_process from 'child_process';
+
+import boomp from './boomp.js';
 
 describe('boomp', () => {
   let readFileSync, writeFileSync, execSync;
 
   beforeEach(() => {
-    readFileSync = sinon.stub(fs, 'readFileSync').returns(JSON.stringify({version: '1.2.3'}));
-    writeFileSync = sinon.stub(fs, 'writeFileSync');
-    execSync = sinon.stub(require('child_process'), 'execSync');
+    readFileSync = stub(fs, 'readFileSync').returns(JSON.stringify({version: '1.2.3'}));
+    writeFileSync = stub(fs, 'writeFileSync');
+    execSync = stub(child_process, 'execSync');
   });
 
   afterEach(() => {
@@ -20,21 +23,37 @@ describe('boomp', () => {
   it('should bump the patch version by default', () => {
     const newVersion = boomp();
     expect(newVersion).to.equal('1.2.4');
-    expect(writeFileSync.calledWith(sinon.match(/package\.json/), sinon.match('1.2.4'))).to.be.true;
+    expect(writeFileSync.calledWith(match(/package\.json/), match('1.2.4'))).to.be.true;
+    expect(execSync.callCount).to.equal(5);
+  });
+
+  it('should bump the patch version', () => {
+    const newVersion = boomp.patch();
+    expect(newVersion).to.equal('1.2.4');
+    expect(writeFileSync.calledWith(match(/package\.json/), match('1.2.4'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
   });
 
   it('should bump the minor version', () => {
-    const newVersion = boomp({minor: true});
+    const newVersion = boomp.minor();
     expect(newVersion).to.equal('1.3.0');
-    expect(writeFileSync.calledWith(sinon.match(/package\.json/), sinon.match('1.3.0'))).to.be.true;
+    expect(writeFileSync.calledWith(match(/package\.json/), match('1.3.0'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
   });
 
   it('should bump the major version', () => {
-    const newVersion = boomp({major: true});
+    const newVersion = boomp.major();
     expect(newVersion).to.equal('2.0.0');
-    expect(writeFileSync.calledWith(sinon.match(/package\.json/), sinon.match('2.0.0'))).to.be.true;
+    expect(writeFileSync.calledWith(match(/package\.json/), match('2.0.0'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
+  });
+
+  it('throws errors with unknown version fields', () => {
+    try {
+      boomp({ version: 'florp' });
+      expect.fail();
+    } catch (error) {
+      expect(error.message).to.include('florp');
+    }
   });
 });
