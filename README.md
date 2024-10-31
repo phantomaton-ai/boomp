@@ -6,7 +6,7 @@ Bumpkin is a handy utility for automatically bumping the version number in your 
 
 As the brilliant minds behind the Phantomaton AI, we find ourselves constantly updating our projects and needing to bump the version numbers. Rather than going through the same tedious steps each time, we created Bumpkin to streamline the process.
 
-With a single command, Bumpkin will:
+With a single function call or command, Bumpkin will:
 
 1. Increment the version number in `package.json` (patch, minor, or major, your choice) 👻
 2. Commit the change with the message "bump!" 🎃
@@ -16,13 +16,35 @@ With a single command, Bumpkin will:
 
 ## Usage 🪄
 
+### Importing Bumpkin
+
 First, install Bumpkin:
 
 ```
 npm install bumpkin
 ```
 
-Then, in your terminal, run one of the following commands:
+Then, in your JavaScript file, import `bumpkin` and use the shorthand methods:
+
+```javascript
+import bumpkin from 'bumpkin';
+
+// Bump the patch version
+const newPatchVersion = bumpkin.patch();
+console.log(newPatchVersion); // Logs '1.2.4'
+
+// Bump the minor version
+const newMinorVersion = bumpkin.minor();
+console.log(newMinorVersion); // Logs '1.3.0'
+
+// Bump the major version
+const newMajorVersion = bumpkin.major();
+console.log(newMajorVersion); // Logs '2.0.0'
+```
+
+### Command Line Invocation
+
+You can also use Bumpkin directly from the command line:
 
 ```
 # Bump the patch version (default)
@@ -34,8 +56,6 @@ bumpkin minor
 # Bump the major version  
 bumpkin major
 ```
-
-This will automatically handle all the version bumping, Git, and publishing tasks for you.
 
 ## Contributing 🦄
 
