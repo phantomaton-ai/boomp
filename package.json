@@ -2,6 +2,7 @@
   "name": "bumpkin",
   "version": "1.0.0",
   "main": "bumpkin.js",
+  "bin": "cli.js",
   "scripts": {
     "all": "lovecraft -a",
     "cov": "lovecraft -c",
