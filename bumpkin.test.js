@@ -3,9 +3,9 @@ import { expect, match, stub } from 'lovecraft';
 import fs from 'fs';
 import child_process from 'child_process';
 
-import boomp from './boomp.js';
+import bumpkin from './bumpkin.js';
 
-describe('boomp', () => {
+describe('bumpkin', () => {
   let readFileSync, writeFileSync, execSync;
 
   beforeEach(() => {
@@ -21,28 +21,28 @@ describe('boomp', () => {
   });
 
   it('should bump the patch version by default', () => {
-    const newVersion = boomp();
+    const newVersion = bumpkin();
     expect(newVersion).to.equal('1.2.4');
     expect(writeFileSync.calledWith(match(/package\.json/), match('1.2.4'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
   });
 
   it('should bump the patch version', () => {
-    const newVersion = boomp.patch();
+    const newVersion = bumpkin.patch();
     expect(newVersion).to.equal('1.2.4');
     expect(writeFileSync.calledWith(match(/package\.json/), match('1.2.4'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
   });
 
   it('should bump the minor version', () => {
-    const newVersion = boomp.minor();
+    const newVersion = bumpkin.minor();
     expect(newVersion).to.equal('1.3.0');
     expect(writeFileSync.calledWith(match(/package\.json/), match('1.3.0'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
   });
 
   it('should bump the major version', () => {
-    const newVersion = boomp.major();
+    const newVersion = bumpkin.major();
     expect(newVersion).to.equal('2.0.0');
     expect(writeFileSync.calledWith(match(/package\.json/), match('2.0.0'))).to.be.true;
     expect(execSync.callCount).to.equal(5);
@@ -50,7 +50,7 @@ describe('boomp', () => {
 
   it('throws errors with unknown version fields', () => {
     try {
-      boomp({ version: 'florp' });
+      bumpkin({ version: 'florp' });
       expect.fail();
     } catch (error) {
       expect(error.message).to.include('florp');

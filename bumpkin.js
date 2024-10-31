@@ -4,7 +4,7 @@ import child_process from 'child_process';
 
 const versions = { 'major': 0, 'minor': 1, 'patch': 2 };
 
-function boomp(options = { version: 'patch' }) {
+function bumpkin(options = { version: 'patch' }) {
   if (!Object.hasOwn(versions, options.version)) {
     throw new Error([
       `Unknown version field ${options.version}.`,
@@ -28,7 +28,7 @@ function boomp(options = { version: 'patch' }) {
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
   [
-    'git add package.json && git commit -m "boomp!"',
+    'git add package.json && git commit -m "bump!"',
     `git tag v${packageJson.version}`,
     'git push',
     'git push --tags',
@@ -39,7 +39,7 @@ function boomp(options = { version: 'patch' }) {
 }
 
 Object.keys(versions).forEach(version => {
-  boomp[version] = (options = {}) => boomp({ ...options, version });
+  bumpkin[version] = (options = {}) => bumpkin({ ...options, version });
 });
 
-export default boomp;
+export default bumpkin;

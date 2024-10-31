@@ -1,7 +1,7 @@
 {
-  "name": "bumplish",
+  "name": "bumpkin",
   "version": "1.0.0",
-  "main": "bumplish.js",
+  "main": "bumpkin.js",
   "scripts": {
     "all": "lovecraft -a",
     "cov": "lovecraft -c",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phantomaton-ai/bumplish.git"
+    "url": "https://github.com/phantomaton-ai/bumpkin.git"
   },
   "keywords": [],
   "author": "Phantomaton",
