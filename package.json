@@ -1,6 +1,6 @@
 {
   "name": "bumpkin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "bumpkin.js",
   "bin": "cli.js",
   "scripts": {
