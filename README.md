@@ -42,6 +42,20 @@ const newMajorVersion = bumpkin.major();
 console.log(newMajorVersion); // Logs '2.0.0'
 ```
 
+### Advanced Usage
+
+If you need more control, you can pass an `options` object to the `bumpkin` function:
+
+```javascript
+// Bump the minor version
+const newMinorVersion = bumpkin({ version: 'minor' });
+console.log(newMinorVersion); // Logs '1.3.0'
+
+// Bump the major version
+const newMajorVersion = bumpkin({ version: 'major' });
+console.log(newMajorVersion); // Logs '2.0.0'
+```
+
 ### Command Line Invocation
 
 You can also use Bumpkin directly from the command line:
